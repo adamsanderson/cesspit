@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   
   s.summary     = 'Clean up your stinking CeSSPit (see that\'s a joke there).'
   s.description = 'Scans and finds unused css declarations.'
+  s.licenses    = 'MIT'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + ["README.markdown"]
   s.executable   = 'cesspit'
