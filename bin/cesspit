@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require_relative '../lib/cesspit'
+require_relative '../lib/cesspit/cli'
+
+options = {
+  html_paths: [],
+  css_paths: [],
+}
+read_from_stdin = nil
+
+opts = OptionParser.new
+opts.on("--html PATHS", Array, "Comma separated list of html documents to scan") do |paths|
+  options[:html_paths] += paths
+end
+
+opts.on("--css PATHS", Array, "Comma separated list of css paths to scan") do |paths|
+  options[:css_paths] += paths
+end
+
+opts.on("--[no]-stream", "Read files from STDIN, delimited by ASCII:\\28") do |enabled|
+  read_from_stdin = enabled
+end
+
+opts.on_tail("-h", "--help", "Show this message") do
+  puts opts
+  exit
+end
+
+opts.parse!(ARGV)
+
+if options[:css_paths].empty?
+  puts "--css is required.\n"
+  puts opts
+  exit 1
+end
+
+unless read_from_stdin === false
+  if ARGV.last == "--"
+    ARGV.pop
+    read_from_stdin = true
+  elsif !STDIN.tty?
+    read_from_stdin = true
+  end
+end
+
+options[:html_paths] += ARGV
+
+cli = Cesspit::CLI.new(options)
+cli.read_from(STDIN) if read_from_stdin
+cli.report
