@@ -26,22 +26,25 @@ Why bother generating piles of HTML documents when your tests already do it for 
 If you're using the Minitest, include `Cesspit::MinitestScanner`.  For instance, in Rails, add this to your `test_helper.rb` file:
 
 ~~~ ruby
-# Include Cesspit's MinitestScanner:
-include Cesspit::MinitestScanner
+# Configure Cesspit's MinitestScanner:
+require 'cesspit/minitest_scanner'
 
 # Enable Cesspit
 Cesspit::MinitestScanner.enable! do |cesspit|
   # Assuming your compiled CSS file is called `application.css`:
-  cesspit.add_css Rails.application.config.assets['application.css'], 'application.css'
+  css = Rails.application.assets['application.css'].to_s
+  cesspit.add_css css, 'application.css'
 end
 ~~~
 
 When your tests complete, Cesspit will print out all the selectors that weren't used.
 
-Other Frameworks 
-----------------
+TODO
+----
 
-If you are interested in extending Cesspit to support other test frameworks such as rspec or cucumber, let me know.
+* Minitest integration is a little sloppy at the moment since I'm building this out of need.
+* Add better hooks for Rails including asset support and rendering interception.
+* Add support for other test frameworks.
 
 LICENSE:
 --------

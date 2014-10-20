@@ -52,7 +52,7 @@ class MinitestIntegrationTest < Minitest::Test
   class FakeTest
     include Minitest::Test::LifecycleHooks
     include Cesspit::MinitestScanner
-    DummyResponse = Struct.new(:body, :status_code, :content_type)
+    DummyResponse = Struct.new(:body, :status, :content_type)
   
     attr_reader :response
 
