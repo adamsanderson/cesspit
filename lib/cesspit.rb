@@ -5,6 +5,11 @@ require_relative './version'
 class Cesspit
   # http://en.wikipedia.org/wiki/Delimiter#ASCII_delimited_text
   FILE_DELIMITER = 28.chr
+  IGNORED_PSEUDO_SELECTORS = /
+    (:active)|(:hover)|(:focus)|(:disabled)|(:checked) # Ignore stateful selectors
+    (\:before)|(:after)                           # Ignore content selectors
+    |(\:\:[\w+\-]+)                            # Ignore pseudo elements
+  /xi
   
   attr_reader :selectors_by_source
   
@@ -41,7 +46,12 @@ class Cesspit
     
     selectors_by_source.each do |path, selectors|
       selectors.reject! do |selector|
-        doc.at_css(selector)
+        begin
+          doc.at_css(selector)
+        rescue StandardError => ex
+          STDERR.puts "Could not process #{selector.inspect}"
+          true
+        end
       end
     end
   end
@@ -76,9 +86,20 @@ class Cesspit
     all_selectors = []
     parser.add_block!(text)
     parser.each_selector do |selector, declarations, specificity, media_types|
-      all_selectors << selector
+      scrubbed = scrub_pseudo_selectors(selector)
+      all_selectors << scrubbed
     end
     
     all_selectors
+  end
+  
+  def scrub_pseudo_selectors(selector)
+    selector.gsub(IGNORED_PSEUDO_SELECTORS) do |match|
+      if $`[-1] =~ /[\w\*\]]/
+        ""  # .div:hover
+      else
+        "*" # .div > :hover
+      end
+    end
   end
 end
