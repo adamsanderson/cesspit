@@ -1,5 +1,9 @@
 require_relative '../cesspit'
 
+if defined?(Minitest)
+  require_relative '../minitest/cesspit_plugin'
+end
+
 module Cesspit::MinitestScanner
   
   def self.enable!(*css_paths)
@@ -10,31 +14,9 @@ module Cesspit::MinitestScanner
     yield cesspit if block_given?
     self.cesspit= cesspit
     
-    if defined?(Minitest::Test)
-      Minitest::Test.send :include, Cesspit::MinitestScanner
-      reporter_cls = Class.new("Minitest::Reporter") do
-        def report
-          io.puts Cesspit::MinitestScanner.cesspit
-        end
-      end
-      
-      Minitest::Test.reporter.reporters << reporter_cls.new
-      
-    else
-      MiniTest::Unit::TestCase.send :include, Cesspit::MinitestScanner
-
-      # Inelegant, but patch the status method for MiniTest < 5.x
-      MiniTest::Unit.class_eval do
-        alias_method :status_without_cesspit, :status
-  
-        def status io = self.output
-          io.puts Cesspit::MinitestScanner.cesspit
-          status_without_cesspit(io)
-        end
-      end
-      
+    if !defined?(Minitest) && defined(MiniTest)
+      init_minitest_4x_integration 
     end
-
   end
   
   def self.enabled?
@@ -54,7 +36,7 @@ module Cesspit::MinitestScanner
     
     response = instance_variable_get(:@repsonse)
     response ||= self.response if respond_to?(:response)
-    
+
     if response &&
        response.respond_to?(:body)         &&
        response.respond_to?(:content_type) &&
@@ -68,6 +50,22 @@ module Cesspit::MinitestScanner
     end
   
     super
+  end
+  
+  private
+  
+  def self.init_minitest_4x_integration
+    MiniTest::Unit::TestCase.send :include, Cesspit::MinitestScanner
+
+    # Inelegant, but patch the status method for MiniTest < 5.x
+    MiniTest::Unit.class_eval do
+      alias_method :status_without_cesspit, :status
+
+      def status io = self.output
+        io.puts Cesspit::MinitestScanner.cesspit
+        status_without_cesspit(io)
+      end
+    end
   end
   
 end
