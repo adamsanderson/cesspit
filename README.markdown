@@ -26,14 +26,11 @@ Why bother generating piles of HTML documents when your tests already do it for 
 If you're using the Minitest, include `Cesspit::MinitestScanner`.  For instance, in Rails, add this to your `test_helper.rb` file:
 
 ~~~ ruby
-# Configure Cesspit's MinitestScanner:
 require 'cesspit/minitest_scanner'
 
 # Enable Cesspit
 Cesspit::MinitestScanner.enable! do |cesspit|
-  # Assuming your compiled CSS file is called `application.css`:
-  css = Rails.application.assets['application.css'].to_s
-  cesspit.add_css css, 'application.css'
+  cesspit.add_all_assets
 end
 ~~~
 

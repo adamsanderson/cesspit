@@ -72,7 +72,11 @@ class Cesspit
       end
     end
     
-    out.join("\n")
+    if out.empty?
+      ""
+    else
+      "Cesspit:\n" + out.join("\n")
+    end
   end
   
   private
@@ -102,4 +106,9 @@ class Cesspit
       end
     end
   end
+end
+
+# Plugins:
+if defined?(Rails)
+  require_relative './rails/rails_plugin'
 end
