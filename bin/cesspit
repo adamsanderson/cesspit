@@ -11,6 +11,9 @@ options = {
 read_from_stdin = nil
 
 opts = OptionParser.new
+
+opts.banner = "Usage: #{$0} --html a.html,b.html --css a.css,b.css"
+
 opts.on("--html PATHS", Array, "Comma separated list of html documents to scan") do |paths|
   options[:html_paths] += paths
 end
@@ -21,6 +24,11 @@ end
 
 opts.on("--[no]-stream", "Read files from STDIN, delimited by ASCII:\\28") do |enabled|
   read_from_stdin = enabled
+end
+
+opts.on("-v","--version", "Print version") do |enabled|
+  puts Cesspit::VERSION
+  exit
 end
 
 opts.on_tail("-h", "--help", "Show this message") do
