@@ -23,7 +23,7 @@ Test Integration
 
 Why bother generating piles of HTML documents when your tests already do it for you?
 
-If you're using the Minitest, include `Cesspit::MinitestScanner`.  For instance, in Rails, add this to your `test_helper.rb` file:
+If you're using the Minitest, use the `Cesspit::MinitestScanner`.  For instance, in Rails, add this to your `test_helper.rb` file:
 
 ~~~ ruby
 require 'cesspit/minitest_scanner'
@@ -36,11 +36,40 @@ end
 
 When your tests complete, Cesspit will print out all the selectors that weren't used.
 
+If you want more control, you can choose to scan certain files or assets:
+
+~~~ ruby
+require 'cesspit/minitest_scanner'
+
+# Enable Cesspit
+Cesspit::MinitestScanner.enable! do |cesspit|
+  # Add a asset from the asset pipeline:
+  cesspit.add_asset "app.css"
+  
+  # Add a normal stylesheet:
+  cesspit.read_css  "public/stylesheets/reset.css"
+end
+~~~
+
+To conditionally run Cesspit, use an environment variable:
+
+~~~ ruby
+require 'cesspit/minitest_scanner'
+
+# Run with: `CESSPIT=1 rake test`
+if ENV["CESSPIT"]
+  Cesspit::MinitestScanner.enable! do |cesspit|
+    cesspit.add_all_assets
+  end
+end
+~~~
+
+
 TODO
 ----
 
-* Minitest integration is a little sloppy at the moment since I'm building this out of need.
-* Add better hooks for Rails including asset support and rendering interception.
+* Minitest 4.x integration is a little sloppy at the moment.
+* Add better hooks for Rails intercepting rails requests.
 * Add support for other test frameworks.
 
 LICENSE:
