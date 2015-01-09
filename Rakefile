@@ -10,7 +10,7 @@ end
 desc "Install the current gem"
 task "install" => [:gem] do
   path = pkg.package_dir_path
-  system 'gem', 'install', path
+  system 'gem', 'install', "#{path}.gem"
 end
 
 Rake::TestTask.new do |t|
