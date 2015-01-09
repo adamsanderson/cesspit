@@ -30,28 +30,14 @@ require 'cesspit/minitest_scanner'
 
 # Enable Cesspit
 Cesspit::MinitestScanner.enable! do |cesspit|
-  cesspit.add_all_assets
-end
-~~~
-
-When your tests complete, Cesspit will print out all the selectors that weren't used.
-
-If you want more control, you can choose to scan certain files or assets:
-
-~~~ ruby
-require 'cesspit/minitest_scanner'
-
-# Enable Cesspit
-Cesspit::MinitestScanner.enable! do |cesspit|
-  # Add a asset from the asset pipeline:
-  cesspit.add_asset "app.css"
-  
   # Add a normal stylesheet:
   cesspit.read_css  "public/stylesheets/reset.css"
 end
 ~~~
 
-To conditionally run Cesspit, use an environment variable:
+When your tests complete, Cesspit will print out all the selectors that weren't used.
+
+To conditionally run Cesspit, you can wrap its configuration in an environment variable:
 
 ~~~ ruby
 require 'cesspit/minitest_scanner'
@@ -64,11 +50,9 @@ if ENV["CESSPIT"]
 end
 ~~~
 
-
 TODO
 ----
 
-* Minitest 4.x integration is a little sloppy at the moment.
 * Add better hooks for Rails intercepting rails requests.
 * Add support for other test frameworks.
 

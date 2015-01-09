@@ -107,8 +107,3 @@ class Cesspit
     end
   end
 end
-
-# Plugins:
-if defined?(Rails)
-  require_relative './rails/rails_plugin'
-end
