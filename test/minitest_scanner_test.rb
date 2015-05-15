@@ -9,7 +9,6 @@ class MinitestIntegrationTest < Minitest::Test
   
   def setup
     @cesspit = Minitest::Mock.new
-    @cesspit.expect(:nil?, false)
     Cesspit::MinitestScanner.cesspit = @cesspit
   end
   
