@@ -3,7 +3,7 @@ require_relative '../cesspit/minitest_scanner'
 # Minitest Plugin for Minitest 5.x
 module Minitest
   def self.plugin_cesspit_options(opts, options)
-    opts.on "--cesspit", Array, "Enable Cesspit response scanning" do |paths|
+    opts.on "--cesspit PATHS", Array, "Enable Cesspit response scanning" do |paths|
       options[:cesspit] = paths
     end
   end
@@ -13,7 +13,7 @@ module Minitest
     if !paths.empty?
       # Include hooks for MinitestScanner
       Minitest::Test.send :include, Cesspit::MinitestScanner
-      cesspit = Minitest::Test.cesspit
+      cesspit = Cesspit::MinitestScanner.cesspit
       
       paths.each{|path| cesspit.read_css(path) }
       
